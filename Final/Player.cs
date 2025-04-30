@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace GemMiningGame
@@ -12,10 +12,12 @@ namespace GemMiningGame
         public Player()
         {
             Inventory = new List<Gem>();
-            CurrentDrill = new Drill("Basic Drill", 1, 0);
             Money = 0;
+            
+            // Initialize with basic drill
+            var merchant = new Merchant();
+            CurrentDrill = merchant.availableDrills[0];
         }
-
         public void AddToInventory(Gem gem)
         {
             Inventory.Add(gem);
