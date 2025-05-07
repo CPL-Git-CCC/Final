@@ -1,42 +1,42 @@
-@startuml GemMiningGameUML
+# Gem Mining Game
 
-title Gem Mining Game - Class Diagram
+A C# console game where players mine gems and upgrade their drills to eventually purchase the mine deed.
 
-skinparam class {
-    BackgroundColor White
-    BorderColor Black
-    ArrowColor #444
-}
+## Class Diagram
 
-package "GemMiningGame" {
+```mermaid
+classDiagram
+    direction TB
+
     class Game {
-        -player: Player
-        -mine: Mine
-        -merchant: Merchant
-        -isRunning: bool
-        +Run(): void
-        -MineGems(): void
-        -VisitMerchant(): void
+        -Player player
+        -Mine mine
+        -Merchant merchant
+        -bool isRunning
+        +Run() void
+        -MineGems() void
+        -VisitMerchant() void
     }
 
     class Player {
-        -Inventory: List<Gem>
-        -CurrentDrill: Drill
-        -Money: decimal
-        +AddToInventory(gem: Gem): void
-        +SellAllGems(): decimal
-        +DisplayInventory(merchant: Merchant): void
-        +PurchaseDrill(drill: Drill): bool
-        +FormatMoney(amount: decimal): string
+        -List<Gem> Inventory
+        -Drill CurrentDrill
+        -decimal Money
+        +AddToInventory(Gem gem) void
+        +SellAllGems() decimal
+        +DisplayInventory(Merchant merchant) void
+        +PurchaseDrill(Drill drill) bool
+        +FormatMoney(decimal amount) string
     }
 
     class Gem {
-        +Name: string
-        +Value: decimal
-        +Rarity: GemRarity
+        +string Name
+        +decimal Value
+        +GemRarity Rarity
     }
 
-    enum GemRarity {
+    class GemRarity {
+        <<enumeration>>
         Common
         Uncommon
         Rare
@@ -45,51 +45,43 @@ package "GemMiningGame" {
     }
 
     class Drill {
-        +Name: string
-        +Tier: int
-        +Cost: decimal
-        +RarityProbabilities: Dictionary<GemRarity, int>
+        +string Name
+        +int Tier
+        +decimal Cost
+        +Dictionary<GemRarity, int> RarityProbabilities
     }
 
     class Mine {
-        -random: Random
-        -possibleGems: List<Gem>
-        +MineGem(drill: Drill, ownsMine: bool): Gem
+        -Random random
+        -List<Gem> possibleGems
+        +MineGem(Drill drill, bool ownsMine) Gem
     }
 
     class Merchant {
-        -allDrills: List<Drill>
-        +Deed: MineDeed
-        +Interact(player: Player): void
-        -ShowAvailableDrills(player: Player): void
-        -SellGems(player: Player): void
-        -OfferDrills(player: Player): void
-        -AttemptPurchaseDeed(player: Player): void
+        -List<Drill> allDrills
+        +MineDeed Deed
+        +Interact(Player player) void
+        -ShowAvailableDrills(Player player) void
+        -SellGems(Player player) void
+        -OfferDrills(Player player) void
+        -AttemptPurchaseDeed(Player player) void
     }
 
     class MineDeed {
-        +Name: string
-        +Description: string
-        +Price: decimal
-        +IsPurchased: bool
-        +Purchase(): void
-        +GetPriceFormatted(player: Player): string
+        +string Name
+        +string Description
+        +decimal Price
+        +bool IsPurchased
+        +Purchase() void
+        +GetPriceFormatted(Player player) string
     }
-}
 
-Game "1" *-- "1" Player
-Game "1" *-- "1" Mine
-Game "1" *-- "1" Merchant
-
-Player "1" *-- "0..*" Gem
-Player "1" *-- "1" Drill
-
-Mine "1" *-- "0..*" Gem
-Mine "1" *-- "1" Random
-
-Merchant "1" *-- "1" MineDeed
-Merchant "1" *-- "0..*" Drill
-
-Drill "1" *-- "1..*" GemRarity
-
-@enduml
+    Game --> Player : manages
+    Game --> Mine : contains
+    Game --> Merchant : contains
+    Player --> Gem : collects
+    Player --> Drill : uses
+    Mine --> Gem : generates
+    Merchant --> Drill : sells
+    Merchant --> MineDeed : offers
+    Drill --> GemRarity : defines probabilities
